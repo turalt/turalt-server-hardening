@@ -9,3 +9,4 @@
   become: True
   roles:
     - { role: iptables, tags: [ 'iptables' ] }
+    - { role: postfix, tags: [ 'postfix' ] }

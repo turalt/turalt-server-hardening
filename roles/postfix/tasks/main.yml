@@ -1,0 +1,46 @@
+---
+- name: set postfix defaults
+  debconf:
+    name: 'postfix'
+    question: '{{item.question}}'
+    value: '{{item.value}}'
+    vtype: '{{item.type}}'
+  with_items:
+    - {question: 'postfix/mailname', value: '{{ postfix_hostname }}', type: 'string'}
+    - {question: 'postfix/main_mailer_type', value: 'Internet Site', type: 'select'}
+    - {question: 'postfix/destinations', value: '{{ postfix_hostname }}, localhost.localdomain, localhost', type: 'string'}
+
+- name: install
+  apt:
+    name: "{{item}}"
+    update_cache: yes
+    cache_valid_time: 3600
+    state: present
+  with_items:
+  - postfix
+
+- name: configure as a null client
+  lineinfile:
+    dest: /etc/postfix/main.cf
+    regexp: "{{item.pattern}}"
+    line: "{{item.line}}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - {pattern: '^myhostname\s*=', line: 'myhostname = {{ postfix_hostname }}'}
+    - {pattern: '^mynetworks\s*=', line: 'mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128'}
+    - {pattern: '^myorigin\s*=', line: 'myorigin = {{ postfix_domain }}'}
+    - {pattern: '^relayhost\s*=', line: 'relayhost = {{ postfix_domain }}'}
+    - {pattern: '^inet_interfaces\s*=', line: 'inet_interfaces = loopback-only'}
+    - {pattern: '^mydestination\s*=', line: 'mydestination ='}
+  notify:
+    - restart postfix
+
+- name: set up forwarding
+  lineinfile:
+    dest: /etc/aliases
+    regexp: "^root:"
+    line: "root = {{ postfix_delegate }}"
+  notify:
+    - rebuild aliases

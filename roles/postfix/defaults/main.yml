@@ -1,0 +1,4 @@
+---
+postfix_hostname: 'example.com'
+postfix_domain: 'example.com'
+postfix_delegate: 'admin@example.com'
