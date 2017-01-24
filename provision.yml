@@ -1,0 +1,11 @@
+- hosts: all
+  become: True
+  tasks:
+    - name: 'setup'
+      setup:
+        filter: '*'
+
+- hosts: all
+  become: True
+  roles:
+    - { role: iptables, tags: [ 'iptables' ] }
