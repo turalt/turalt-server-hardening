@@ -1,0 +1,61 @@
+---
+# sudo iptables -A INPUT -i lo -j ACCEPT
+# sudo iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+# sudo iptables -A INPUT -p tcp --dport 22 -j ACCEPT
+# sudo iptables -A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT
+# sudo iptables -A INPUT -j DROP
+
+- name: install
+  apt: name={{ item }} update_cache=yes cache_valid_time=3600 state=present
+  with_items:
+  - iptables-persistent
+
+- name: flush
+  command: "iptables -F"
+
+- name: allow everything on the loopback interface
+  iptables:
+    chain: INPUT
+    in_interface: lo
+    jump: ACCEPT
+
+- name: allow connection management
+  iptables:
+    chain: INPUT
+    ctstate:
+      - ESTABLISHED
+      - RELATED
+    jump: ACCEPT
+
+- name: allow the required protocols
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{item}}"
+    jump: ACCEPT
+  with_items:
+    - 22
+    - 80
+    - 443
+
+- name: drop everything else
+  iptables:
+    chain: INPUT
+    jump: DROP
+
+- name: prevent the iptables-peristent install dialog
+  debconf:
+    name: iptables-persistent
+    question: "{{ item }}"
+    vtype: boolean
+    value: true
+  with_items:
+  - iptables-persistent/autosave_v4
+  - iptables-persistent/autosave_v6
+
+- name: install iptables-persistent
+  apt:
+    name: iptables-persistent
+#
+# - name: save the tables
+#   command: "dpkg-reconfigure iptables-persistent"
