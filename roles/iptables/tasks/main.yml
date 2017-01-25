@@ -43,6 +43,12 @@
     chain: INPUT
     jump: DROP
 
+- name: write the v4 iptables
+  shell: iptables-save > /etc/iptables/rules.v4
+
+- name: write the v6 iptables
+  shell: ip6tables-save > /etc/iptables/rules.v6
+
 - name: prevent the iptables-peristent install dialog
   debconf:
     name: iptables-persistent
@@ -56,6 +62,7 @@
 - name: install iptables-persistent
   apt:
     name: iptables-persistent
+
 #
 # - name: save the tables
 #   command: "dpkg-reconfigure iptables-persistent"
