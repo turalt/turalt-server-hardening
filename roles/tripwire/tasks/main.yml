@@ -7,6 +7,7 @@
     state: present
   register: installed_tripwire
 
+## If we just installed, set the passphrases from empty to a useful value
 - name: update local passphrase
   command: twadmin -m C --local-keyfile /etc/tripwire/debian-local.key --local-passphrase-old "" --local-passphrase "{{tripwire_local_passphrase}}" --silent
   when: installed_tripwire.changed
@@ -14,3 +15,18 @@
 - name: update site passphrase
   command: twadmin -m C --site-keyfile /etc/tripwire/site.key --site-passphrase-old "" --site-passphrase "{{tripwire_site_passphrase}}" --silent
   when: installed_tripwire.changed
+
+- name: generate policy file
+  template:
+    src: twpol.txt.j2
+    dest: /etc/tripwire/twpol.txt
+
+## Create a policy file
+- name: create policy file
+  command: >
+    twadmin --create-polfile  --site-passphrase "{{tripwire_site_passphrase}}" /etc/tripwire/twpol.txt
+
+## Create a policy file
+- name: reinitialize the database
+  command: >
+    tripwire --init --local-passphrase "{{tripwire_local_passphrase}}"

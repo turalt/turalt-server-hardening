@@ -1,3 +1,37 @@
 ---
 tripwire_site_passphrase: 'site_passphrase'
 tripwire_local_passphrase: 'local_passphrase'
+
+tripwire_root_config_files:
+  - {path: '/root', action: '$(SEC_CRIT)'}
+  - {path: '/root/.bashrc', action: '$(SEC_CONFIG)'}
+  - {path: '/root/.bash_profile', action: '$(SEC_CONFIG)'}
+  - {path: '/root/.bash_history', action: '$(SEC_CONFIG)'}
+
+tripwire_devices_and_kernel_information:
+  - {path: '/dev',                    action: '$(Device)'}
+  - {path: '/dev/pts',                action: '$(Device)'}
+  - {path: '/proc/devices',           action: '$(Device)'}
+  - {path: '/proc/net',               action: '$(Device)'}
+  - {path: '/proc/tty',               action: '$(Device)'}
+  - {path: '/proc/sys',               action: '$(Device)'}
+  - {path: '/proc/cpuinfo',           action: '$(Device)'}
+  - {path: '/proc/modules',           action: '$(Device)'}
+  - {path: '/proc/mounts',            action: '$(Device)'}
+  - {path: '/proc/dma',               action: '$(Device)'}
+  - {path: '/proc/filesystems',       action: '$(Device)'}
+  - {path: '/proc/interrupts',        action: '$(Device)'}
+  - {path: '/proc/ioports',           action: '$(Device)'}
+  - {path: '/proc/scsi',              action: '$(Device)'}
+  - {path: '/proc/kcore',             action: '$(Device)'}
+  - {path: '/proc/self',              action: '$(Device)'}
+  - {path: '/proc/kmsg',              action: '$(Device)'}
+  - {path: '/proc/stat',              action: '$(Device)'}
+  - {path: '/proc/loadavg',           action: '$(Device)'}
+  - {path: '/proc/uptime',            action: '$(Device)'}
+  - {path: '/proc/locks',             action: '$(Device)'}
+  - {path: '/proc/meminfo',           action: '$(Device)'}
+  - {path: '/proc/misc',              action: '$(Device)'}
+
+tripwire_system_boot_changes:
+  - {path: '/var/log',                action: '$(SEC_CONFIG)'}
