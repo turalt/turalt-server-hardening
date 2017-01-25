@@ -8,5 +8,6 @@
 - hosts: all
   become: True
   roles:
+    - { role: fail2ban, tags: [ 'fail2ban' ] }
     - { role: iptables, tags: [ 'iptables' ] }
     - { role: postfix, tags: [ 'postfix' ] }
