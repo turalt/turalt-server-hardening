@@ -1,0 +1,16 @@
+---
+- name: install
+  apt:
+    name: tripwire
+    update_cache: yes
+    cache_valid_time: 3600
+    state: present
+  register: installed_tripwire
+
+- name: update local passphrase
+  command: twadmin -m C --local-keyfile /etc/tripwire/debian-local.key --local-passphrase-old "" --local-passphrase "{{tripwire_local_passphrase}}" --silent
+  when: installed_tripwire.changed
+
+- name: update site passphrase
+  command: twadmin -m C --site-keyfile /etc/tripwire/site.key --site-passphrase-old "" --site-passphrase "{{tripwire_site_passphrase}}" --silent
+  when: installed_tripwire.changed

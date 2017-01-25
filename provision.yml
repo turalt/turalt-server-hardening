@@ -11,3 +11,4 @@
     - { role: fail2ban, tags: [ 'fail2ban' ] }
     - { role: iptables, tags: [ 'iptables' ] }
     - { role: postfix, tags: [ 'postfix' ] }
+    - { role: tripwire, tags: [ 'tripwire' ] }
