@@ -30,3 +30,13 @@
 - name: reinitialize the database
   command: >
     tripwire --init --local-passphrase "{{tripwire_local_passphrase}}"
+
+## Add a cron task
+- name: periodically check the system
+  cron:
+    name: "tripwire"
+    minute: "49"
+    hour: "*"
+    job: 'tripwire --check | mail -s "Tripwire report for `uname -n`" root'
+    state: present
+    user: root

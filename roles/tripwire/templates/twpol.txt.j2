@@ -172,7 +172,7 @@ SIG_HI        = 100 ;                # Critical files that are
 )
 {
 {% for item in tripwire_system_boot_changes %}
-        {{item.path}}                         -> {{item.action}} ;
+        {{item.path}}                       {% if item.action %}  -> {{item.action}}{% endif %} ;
 {% endfor %}
 }
 
@@ -183,7 +183,7 @@ SIG_HI        = 100 ;                # Critical files that are
 )
 {
 {% for item in tripwire_root_config_files %}
-        {{item.path}}                         -> {{item.action}} ;
+        {{item.path}}                       {% if item.action %}  -> {{item.action}}{% endif %} ;
 {% endfor %}
 }
 
@@ -196,7 +196,7 @@ SIG_HI        = 100 ;                # Critical files that are
 )
 {
 {% for item in tripwire_devices_and_kernel_information %}
-        {{item.path}}                         -> {{item.action}} ;
+        {{item.path}}                       {% if item.action %}  -> {{item.action}}{% endif %} ;
 {% endfor %}
 }
 
